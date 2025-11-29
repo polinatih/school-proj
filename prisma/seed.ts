@@ -16,6 +16,7 @@ async function main() {
       where: { level: 2 },
       update: {},
       create: { level: 2 },
+    
     }),
     prisma.grade.upsert({
       where: { level: 3 },
