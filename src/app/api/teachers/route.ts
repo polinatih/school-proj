@@ -2,10 +2,21 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { clerkClient, auth } from "@clerk/nextjs/server";
 
-// GET /api/teachers - Получение списка всех учителей
 export async function GET(request: NextRequest) {
   try {
+     // Проверяем авторизацию
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
     // Получаем параметры из URL (для пагинации и поиска)
     const searchParams = request.nextUrl.searchParams
     const page = parseInt(searchParams.get('page') || '1')
@@ -74,7 +85,29 @@ export async function GET(request: NextRequest) {
 // POST /api/teachers - Создание нового учителя
 export async function POST(request: NextRequest) {
   try {
-    // Получаем данные из тела запроса
+      // Проверяем авторизацию и роль
+    const { userId, sessionClaims } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const role = user.publicMetadata?.role;
+
+    // Только admin может создавать учителей
+    console.log("ROLEteach:", role);
+    if (role !== 'admin') {
+      return NextResponse.json(
+        { success: false, error: 'Forbidden: Admin access required' },
+        { status: 403 }
+      )
+    }
+
     const body = await request.json()
 
     // Валидация обязательных полей

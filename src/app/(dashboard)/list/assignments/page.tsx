@@ -4,8 +4,10 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import {
   assignmentsData,
-  role,
+
 } from "@/lib/data";
+import { getRole } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 
 type Assignment = {
@@ -41,7 +43,12 @@ const columns = [
   },
 ];
 
-const AssignmentListPage = () => {
+const AssignmentListPage = async () => {
+  const role = await getRole();
+  const items = await prisma.assignment.findMany({
+    // include: { relatedModel: true },
+    orderBy: { dueDate: "desc" },
+  });
   const renderRow = (item: Assignment) => (
     <tr
       key={item.id}

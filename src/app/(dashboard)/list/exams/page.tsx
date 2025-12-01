@@ -2,7 +2,9 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { examsData, role } from "@/lib/data";
+import { examsData} from "@/lib/data";
+import { getRole } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 
 type Exam = {
@@ -38,7 +40,13 @@ const columns = [
   },
 ];
 
-const ExamListPage = () => {
+const ExamListPage = async () => {
+  const role = await getRole();
+   const items = await prisma.exam.findMany({
+    // include: { relatedModel: true },
+    orderBy: { startTime: "desc" },
+  });
+
   const renderRow = (item: Exam) => (
     <tr
       key={item.id}

@@ -1,9 +1,11 @@
+// src/components/AttendanceChart.tsx
+
 "use client";
+
 import Image from "next/image";
 import {
   BarChart,
   Bar,
-  Rectangle,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -48,15 +50,24 @@ const AttendanceChart = () => {
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart width={500} height={300} data={data} barSize={20}>
+        <BarChart
+          width={500}
+          height={300}
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
           <XAxis
             dataKey="name"
             axisLine={false}
-            tick={{ fill: "#cfceff" }}
+            tick={{ fill: "#d1d5db" }}
             tickLine={false}
           />
-          <YAxis axisLine={false} tick={{ fill: "#cfceff" }} tickLine={false} />
+          <YAxis 
+            axisLine={false} 
+            tick={{ fill: "#d1d5db" }} 
+            tickLine={false} 
+          />
           <Tooltip
             contentStyle={{ borderRadius: "10px", borderColor: "lightgray" }}
           />
@@ -70,12 +81,14 @@ const AttendanceChart = () => {
             fill="#FAE27C"
             legendType="circle"
             radius={[10, 10, 0, 0]}
+            barSize={20}
           />
           <Bar
             dataKey="absent"
-            fill="#cfceff"
+            fill="#C3EBFA"
             legendType="circle"
             radius={[10, 10, 0, 0]}
+            barSize={20}
           />
         </BarChart>
       </ResponsiveContainer>
